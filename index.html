@@ -11,10 +11,26 @@
     </header>
     <section>
       <h2>Dados NFT</h2>
-      <h3>Nome: <span id="nftNome">&nbsp;</span></h3>
-      <h5>Descrição: <span id="nftDesc">&nbsp;</span></h5>
+      <h3>Nome: <span id="nftNome">Buscando informação...</span></h3>
+      <h5>Descrição: <span id="nftDesc">Buscando informação...</span></h5>
       <div id="divImg" style="display: none">
         <img width="200" height="200" id="imgNFT" src="" alt="imagem NFT" />
+      </div>
+    </section>
+    <section>
+      <h2>Novo NFT</h2>
+      <div>
+        <form action="" name="formMint" id="formMint" method="get">
+          <label for="formTo">Endereço da destinatário:</label>
+          <br /><br />
+          <input type="text" placeholder="<0x...>" required name="formTo" id="formTo" />
+          <br /><br />
+          <label for="formMetadados">URL Metadados:</label>
+          <br /><br />
+          <input type="text" placeholder="https://..." required name="formMetadados" id="formMetadados" />
+          <br /><br />
+          <input type="button" value="Mintar (gerar) NFT" onclick="mintar()" />
+        </form>
       </div>
     </section>
     <hr />
@@ -24,8 +40,8 @@
       <h3>Rede selecionada: <span id="networkNetworkID">&nbsp;</span></h3>
     </section>
     <script src="corsapiquet.abi.js"></script>
-    <script type="module">
-      import { ethers } from "https://cdnjs.cloudflare.com/ajax/libs/ethers/6.6.1/ethers.min.js";
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/ethers/6.6.1/ethers.umd.min.js"></script>
+    <script>
       async function init() {
         if (window.ethereum == null) {
           // If MetaMask is not installed, we use the default provider,
@@ -71,6 +87,20 @@
           imgNFT.src = metadados.image;
           const divImg = document.getElementById("divImg");
           divImg.style.display = "block";
+        }
+      }
+    </script>
+    <script>
+      async function mintar() {
+        event.preventDefault();
+        const form = document.getElementById("formMint");
+        const tx = await contract.safeMint(form.formTo.value, form.formMetadados.value);
+        console.log("tx enviada: ", tx);
+        const txReceipt = await tx.wait();
+        console.log("txReceipt: ", txReceipt);
+        if (txReceipt.status === 1) {
+          alert("Parabéns! Novo NFT gerado");
+          form.reset();
         }
       }
       let signer = null;
