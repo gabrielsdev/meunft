@@ -87,6 +87,13 @@
           imgNFT.src = metadados.image;
           const divImg = document.getElementById("divImg");
           divImg.style.display = "block";
+
+          //eventos
+          const filtroevento = contract.filters.Transfer;
+          var eventos = await contract.queryFilter(filtroevento, -90000);
+          console.log("Número de transferências: ", eventos.length);
+          console.log("Logs de transferências: ", eventos);
+
         }
       }
     </script>
